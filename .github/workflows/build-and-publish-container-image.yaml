@@ -16,6 +16,7 @@ jobs:
     - name: Build and tag Docker image
       run: |
         short_commit=$(git rev-parse --short HEAD)
+        cd projeto-fsharp
         docker build . -t ghcr.io/marublaize/projeto-fsharp:latest -t ghcr.io/marublaize/projeto-fsharp:${short_commit}
 
     - name: Login to GitHub Container Registry
