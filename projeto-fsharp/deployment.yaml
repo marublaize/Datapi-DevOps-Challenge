@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: projeto-fsharp
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: projeto-fsharp
+  namespace: projeto-fsharp
+spec:
+  type: NodePort
+  ports:
+    - port: 8085
+      targetPort: 8085
+      nodePort: 30085
+  selector:
+    app: projeto-fsharp
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projeto-fsharp
+  namespace: projeto-fsharp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projeto-fsharp
+  template:
+    metadata:
+      labels:
+        app: projeto-fsharp
+    spec:
+      containers:
+        - name: projeto-fsharp
+          image: ghcr.io/marublaize/projeto-fsharp:latest
+          ports:
+            - containerPort: 8085
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "0.25"
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ghcr-secret
